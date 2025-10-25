@@ -1,7 +1,8 @@
 package com.ironman.book.controller;
 
-import com.ironman.book.entity.Publisher;
-import com.ironman.book.repository.PublisherRepository;
+import com.ironman.book.dto.publisher.PublisherDetailResponse;
+import com.ironman.book.dto.publisher.PublisherOverviewResponse;
+import com.ironman.book.service.PublisherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,16 +19,16 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/publishers")
 public class PublisherController {
 
-    private final PublisherRepository publisherRepository;
+    private final PublisherService publisherService;
 
     @GetMapping
-    Flux<Publisher> findAll() {
-        return publisherRepository.findAll();
+    Flux<PublisherOverviewResponse> findAll() {
+        return publisherService.findAll();
     }
 
 
     @GetMapping("/{id}")
-    Mono<Publisher> findById(@PathVariable("id") Integer id) {
-        return publisherRepository.findById(id);
+    Mono<PublisherDetailResponse> findById(@PathVariable("id") Integer id) {
+        return publisherService.findById(id);
     }
 }
