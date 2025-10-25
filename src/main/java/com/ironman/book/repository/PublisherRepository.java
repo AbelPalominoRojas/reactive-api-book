@@ -8,4 +8,6 @@ public interface PublisherRepository {
     Flux<Publisher> findAll();
 
     Mono<Publisher> findById(Integer id);
+
+    Mono<Publisher> save(Publisher publisher);
 }

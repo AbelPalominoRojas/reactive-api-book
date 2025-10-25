@@ -34,4 +34,10 @@ public class PublisherRepositoryImpl implements PublisherRepository {
                 .map(Optional::get)
                 .switchIfEmpty(Mono.empty());
     }
+
+    @Override
+    public Mono<Publisher> save(Publisher publisher) {
+        return Mono.fromCallable(() -> publisherJpaRepository.save(publisher))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
 }
