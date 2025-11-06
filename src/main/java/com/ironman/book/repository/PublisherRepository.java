@@ -10,4 +10,6 @@ public interface PublisherRepository {
     Mono<Publisher> findById(Integer id);
 
     Mono<Publisher> save(Publisher publisher);
+
+    Mono<Publisher> findByPublisherCode(String publisherCode);
 }

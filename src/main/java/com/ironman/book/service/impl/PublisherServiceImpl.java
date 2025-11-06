@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 // Lombok annotation
 @RequiredArgsConstructor
 
@@ -40,8 +42,11 @@ public class PublisherServiceImpl implements PublisherService {
     public Mono<PublisherResponse> create(PublisherRequest publisherRequest) {
         Publisher publisher = publisherMapper.toEntity(publisherRequest);
 
-        return publisherRepository.save(publisher)
-                .map(publisherMapper::toResponse);
+        return publisherRepository.findByPublisherCode(publisher.getPublisherCode())
+                .filter(Objects::isNull)
+                .flatMap(foundPublisher -> publisherRepository.save(publisher))
+                .map(publisherMapper::toResponse)
+                .switchIfEmpty(Mono.error(new RuntimeException("Publisher with code " + publisher.getPublisherCode() + " already exists.")));
     }
 
     @Override

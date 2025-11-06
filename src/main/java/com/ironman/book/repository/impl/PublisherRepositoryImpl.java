@@ -40,4 +40,13 @@ public class PublisherRepositoryImpl implements PublisherRepository {
         return Mono.fromCallable(() -> publisherJpaRepository.save(publisher))
                 .subscribeOn(Schedulers.boundedElastic());
     }
+
+    @Override
+    public Mono<Publisher> findByPublisherCode(String publisherCode) {
+        return Mono.fromCallable(() -> publisherJpaRepository.findByPublisherCode(publisherCode))
+                .subscribeOn(Schedulers.boundedElastic())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .switchIfEmpty(Mono.empty());
+    }
 }
