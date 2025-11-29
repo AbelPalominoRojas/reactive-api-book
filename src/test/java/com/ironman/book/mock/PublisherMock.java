@@ -1,5 +1,6 @@
 package com.ironman.book.mock;
 
+import com.ironman.book.dto.publisher.PublisherRequest;
 import com.ironman.book.entity.Publisher;
 import com.ironman.book.util.StatusEnum;
 import lombok.AccessLevel;
@@ -34,6 +35,13 @@ public class PublisherMock {
 
     public static Publisher getCreatePublisher() {
         return getPublisherById(null);
+    }
+
+    public static PublisherRequest getPublisherRequest() {
+        return PublisherRequest.builder()
+                .code("MARV001")
+                .name("Marvel Comics")
+                .build();
     }
 
 }

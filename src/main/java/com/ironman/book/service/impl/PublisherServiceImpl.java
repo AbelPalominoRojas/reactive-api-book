@@ -46,10 +46,10 @@ public class PublisherServiceImpl implements PublisherService {
         Publisher publisher = publisherMapper.toEntity(publisherRequest);
 
         return publisherRepository.findByPublisherCode(publisher.getPublisherCode())
-                .filter(Objects::isNull)
-                .flatMap(foundPublisher -> publisherRepository.save(publisher))
-                .map(publisherMapper::toResponse)
-                .switchIfEmpty(Mono.error(PUBLISHER_CODE_CONFLICT.buildException(publisher.getPublisherCode())));
+                .flatMap(foundPublisher -> Mono.<Publisher>error(PUBLISHER_CODE_CONFLICT.buildException(publisher.getPublisherCode())))
+                .switchIfEmpty(Mono.just(publisher))
+                .flatMap(publisherRepository::save)
+                .map(publisherMapper::toResponse);
     }
 
     @Override
