@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static com.ironman.book.exception.ExceptionCatalog.BOOK_NOT_FOUND;
+
 // Lombok annotations
 @RequiredArgsConstructor
 
@@ -65,7 +67,7 @@ public class BookServiceImpl implements BookService {
 
     Mono<Book> getBookOrElseThrow(Integer id) {
         return bookRepository.findById(id)
-                .switchIfEmpty(Mono.error(new RuntimeException("Book not found with id: " + id)));
+                .switchIfEmpty(Mono.error(BOOK_NOT_FOUND.buildException(id)));
     }
 
 }

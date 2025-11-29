@@ -16,6 +16,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
+import static com.ironman.book.exception.ExceptionCatalog.PUBLISHER_CODE_CONFLICT;
+import static com.ironman.book.exception.ExceptionCatalog.PUBLISHER_NOT_FOUND;
+
 // Lombok annotation
 @RequiredArgsConstructor
 
@@ -46,7 +49,7 @@ public class PublisherServiceImpl implements PublisherService {
                 .filter(Objects::isNull)
                 .flatMap(foundPublisher -> publisherRepository.save(publisher))
                 .map(publisherMapper::toResponse)
-                .switchIfEmpty(Mono.error(new RuntimeException("Publisher with code " + publisher.getPublisherCode() + " already exists.")));
+                .switchIfEmpty(Mono.error(PUBLISHER_CODE_CONFLICT.buildException(publisher.getPublisherCode())));
     }
 
     @Override
@@ -72,6 +75,6 @@ public class PublisherServiceImpl implements PublisherService {
 
     private Mono<Publisher> getPublisherOrThrow(Integer id) {
         return publisherRepository.findById(id)
-                .switchIfEmpty(Mono.error(new RuntimeException("Publisher not found with id: " + id)));
+                .switchIfEmpty(Mono.error(PUBLISHER_NOT_FOUND.buildException(id)));
     }
 }

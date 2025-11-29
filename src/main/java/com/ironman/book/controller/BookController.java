@@ -6,6 +6,8 @@ import com.ironman.book.dto.book.BookResponse;
 import com.ironman.book.dto.book.BookSummaryResponse;
 import com.ironman.book.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,28 +22,47 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    Flux<BookSummaryResponse> findAll() {
-        return bookService.findAll();
+    Mono<ResponseEntity<Flux<BookSummaryResponse>>> findAll() {
+        return Mono.just(ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.findAll())
+        );
     }
 
     @GetMapping("/{id}")
-    Mono<BookDetailResponse> findById(@PathVariable("id") Integer id) {
-        return bookService.findById(id);
+    Mono<ResponseEntity<BookDetailResponse>> findById(@PathVariable("id") Integer id) {
+        return bookService.findById(id)
+                .map(bookDetailResponse -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(bookDetailResponse)
+                );
     }
 
     @PostMapping
-    Mono<BookResponse> create(@RequestBody BookRequest bookRequest) {
-        return bookService.create(bookRequest);
+    Mono<ResponseEntity<BookResponse>> create(@RequestBody BookRequest bookRequest) {
+        return bookService.create(bookRequest)
+                .map(bookResponse -> ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body(bookResponse)
+                );
     }
 
     @PutMapping("/{id}")
-    Mono<BookResponse> update(@PathVariable("id") Integer id, @RequestBody BookRequest bookRequest) {
-        return bookService.update(id, bookRequest);
+    Mono<ResponseEntity<BookResponse>> update(@PathVariable("id") Integer id, @RequestBody BookRequest bookRequest) {
+        return bookService.update(id, bookRequest)
+                .map(bookResponse -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(bookResponse)
+                );
     }
 
     @DeleteMapping("/{id}")
-    Mono<BookResponse> deleteById(@PathVariable("id") Integer id) {
-        return bookService.deleteById(id);
+    Mono<ResponseEntity<BookResponse>> deleteById(@PathVariable("id") Integer id) {
+        return bookService.deleteById(id)
+                .map(bookResponse -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(bookResponse)
+                );
     }
 
 }
